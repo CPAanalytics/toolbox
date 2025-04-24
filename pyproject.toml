@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toolbox"
+version = "0.1.0"
+description = "A small CLI toolbox for the accounting team."
+authors = [{name="Joe Chevalier", email="joe.chevalier@onedigital.com"}]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "click>=8.1",
+    "pandas>=2.2"
+]
+
+[project.urls]
+Homepage = "#"
+
+[project.scripts]          # creates the top-level executable
+toolbox = "toolbox.cli:cli"
