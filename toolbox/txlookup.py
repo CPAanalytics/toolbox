@@ -50,24 +50,17 @@ def _parquet_files(gl_path: Path) -> Iterable[Path]:
     help="Exact amount to find (use negative value for debits).",
 )
 @click.option(
-    "--flag-col",
-    default="lookup_match",
-    show_default=True,
-    help="Name of the column that marks rows whose amount equals LOOKUP.",
-)
-@click.option(
     "--out",
     "out_file",
     type=click.Path(writable=True, path_type=Path),
     help="Write matching rows to this file (CSV).  Defaults to STDOUT.",
 )
 def txlookup_cmd(
-        gl_path: Path,
-        amount_col: str,
-        tx_col: str,
-        lookup: float,
-        flag_col: str,
-        out_file: Path | None,
+    gl_path: Path,
+    amount_col: str,
+    tx_col: str,
+    lookup: float,
+    out_file: Path | None,
 ):
     """
     Scan every parquet in *GL_PATH* and emit all rows whose *TX_COL* equals any
@@ -92,10 +85,7 @@ def txlookup_cmd(
     frames = []
     for f in _parquet_files(gl_path):
         df = pd.read_parquet(f)
-        subset = df[df[tx_col].astype(str).isin(target_txids)].copy()
-
-        # add Boolean flag
-        subset[flag_col] = subset[amount_col] == lookup
+        frames.append(df[df[tx_col].astype(str).isin(target_txids)])
 
     result = pd.concat(frames, ignore_index=True)
 
@@ -109,3 +99,4 @@ def txlookup_cmd(
 
 if __name__ == "__main__":
     txlookup_cmd()
+
